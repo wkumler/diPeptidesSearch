@@ -47,3 +47,5 @@ for(i in seq_along(unique(di_peptides$rowname))){
   print(gp)
 }
 dev.off()
+
+# If you want color, ask Will about left_join-ing a metadataframe
