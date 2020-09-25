@@ -31,10 +31,21 @@ grabSingleFileData <- function(filename){
 
 
 # Find paths to files ----
+# @Josh this is the line of code you'll need to change to point at your own files
+# rather than my Falkor ones. You'll probably also need to change the "pattern"
+# to .mzXML since I'm being weird and extracting my files separately.
+# Honestly, you could even paste the file names in here manually, as long as it's
+# a character vector of full file names the rest of the code should run
 ms_file_paths <- dir(r"(G:\My Drive\FalkorFactor\mzMLs\pos)",
-                     pattern = ".mzML",
+                     pattern = "\\.mzML",
                      full.names = TRUE) %>%
   normalizePath()
+# Check that all files can be found
+if(!all(file.exists(ms_file_paths))){
+  message("Unable to find files: ")
+  message(ms_file_paths[!file.exists(ms_file_paths)])
+  stop("Please check that these file paths are correct.")
+}
 
 
 
