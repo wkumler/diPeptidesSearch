@@ -34,8 +34,7 @@ grabSingleFileData <- function(filename){
 ms_file_paths <- dir(r"(G:\My Drive\FalkorFactor\mzMLs\pos)",
                      pattern = ".mzML",
                      full.names = TRUE) %>%
-  normalizePath() %>%
-  `[`(1:3)
+  normalizePath()
 
 
 
@@ -47,7 +46,7 @@ pep_masses <- c(mono_peptides$value, di_peptides$value)
 
 
 # Grab data points within ppm of the peptide mass across all RTs
-stan_MS1_data <- pblapply(ms_file_paths, function(file_path){
+ms1_data <- pblapply(ms_file_paths, function(file_path){
   # Open up the mzML as a data.frame with mz, rt, int columns
   raw_EIC <- grabSingleFileData(file_path)
   
@@ -65,4 +64,4 @@ stan_MS1_data <- pblapply(ms_file_paths, function(file_path){
 
 
 # Write out the data into an .rds object for high-fidelity encoding and speedy reading
-saveRDS(stan_MS1_data, file = "stan_data.rds")
+saveRDS(ms1_data, file = "ms1_data.rds")
