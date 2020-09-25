@@ -68,18 +68,20 @@ pep_masses <- c(mono_peptides$value, di_peptides$value)
 # Grab data points within ppm of the peptide mass across all RTs
 # This is the long step - each file needs to be opened up and organized,
 # but the progress bar should give you an estimate of time required.
+# Six files take about 20 seconds on my Intel i7
 ms1_data <- pblapply(ms_file_paths, function(file_path){
   # Open up the mzML as a data.frame with mz, rt, int columns
   raw_EIC <- grabSingleFileData(file_path)
   
   # Convert to data.table to (greatly) speed up subsetting
   raw_EIC_dt <- as.data.table(raw_EIC)
+  rm(raw_EIC)
   
   # For each mono/di peptide, grab the parts of the mzML that have an m/z 
   # close to (within `ppm`) the peptide mass
   # Assume an H+ adduct and add 1.007276
   lapply(unique(pep_masses), function(mz_i){
-    raw_EIC_dt[mz%between%pmppm(as.numeric(mz_i), ppm=5)+1.007276]
+    raw_EIC_dt[mz%between%pmppm(as.numeric(mz_i)+1.007276, ppm=5)]
   }) %>% do.call(what = rbind) %>%
     cbind(fileid=basename(file_path))
 }) %>% do.call(what = rbind)
