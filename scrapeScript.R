@@ -1,9 +1,11 @@
 library(rvest)
 library(tidyverse)
 
+
+
+# Grab amino acid masses from this website and clean up
 aa_raw <- read_html(x = "http://education.expasy.org/student_projects/isotopident/htdocs/aa-list.html")
 html_nodes(aa_raw, "td")
-
 table_titles <- html_nodes(aa_raw, "th") %>% html_text() %>% as.character()
 aa_clean <- aa_raw %>%
   html_nodes("td") %>% 
@@ -16,6 +18,9 @@ aa_clean <- aa_raw %>%
 aa_map <- pull(aa_clean, 2) %>% `names<-`(pull(aa_clean, 1))
 mono_peptides <- select(aa_clean, mono_name=`3-letter code`, value=Monoisotopic)
 
+
+
+# Do the same for dipeptides from THIS website and clean up
 di_peptides <- "https://www.ionsource.com/tutorial/DeNovo/denovo_tables.htm" %>%
   read_html() %>%
   html_nodes(xpath = '//table[@width="1154"]') %>%
@@ -35,5 +40,8 @@ di_peptides <- "https://www.ionsource.com/tutorial/DeNovo/denovo_tables.htm" %>%
   mutate(value=as.numeric(value)+18.0105) %>%
   mutate(di_name=paste(rowname, name, sep = "-"))
 
+
+
+# Write out two csv files with accurate masses
 write.csv(mono_peptides, file = "mono_peptides.csv", row.names = FALSE)
 write.csv(di_peptides, file = "di_peptides.csv", row.names = FALSE)
