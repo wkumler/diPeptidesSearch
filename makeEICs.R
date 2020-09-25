@@ -18,7 +18,7 @@ di_peptides <- read.csv("di_peptides.csv", stringsAsFactors = FALSE)
 
 
 
-
+# Should be very quick
 pdf(file = "mono_peptide_EICs.pdf", height = 3)
 for(i in seq_len(nrow(mono_peptides))){
   EIC <- MS1_data[mz%between%pmppm(mono_peptides[i,"value"]+1.007276, ppm = 5)]
@@ -30,6 +30,7 @@ for(i in seq_len(nrow(mono_peptides))){
 }
 dev.off()
 
+# Should take a while longer - for me, about a minute
 pdf(file = "di_peptide_EICs.pdf", height = 10, width = 20)
 for(i in seq_along(unique(di_peptides$rowname))){
   peps_i <- di_peptides %>%
